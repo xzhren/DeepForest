@@ -1,3 +1,4 @@
-*__pycache__/
-logs/
-datasets/
+__pycache__/
+*.log
+*.csv
+./datasets/
