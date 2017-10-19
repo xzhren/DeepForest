@@ -1,7 +1,3 @@
-lib/gcforest/__pycache__/
-lib/gcforest/cascade/__pycache__/
-lib/gcforest/datasets/__pycache__/
-lib/gcforest/estimators/__pycache__/
-lib/gcforest/utils/__pycache__/
+*__pycache__/
 logs/
 datasets/
