@@ -17,6 +17,7 @@ from .uci_adult import UCIAdult
 from .uci_letter import UCILetter
 from .uci_semg import UCISEMG
 from .uci_yeast import UCIYeast
+from .driver import Driver
 
 def get_ds_class(type_name):
     if type_name == 'cifar10':
@@ -41,6 +42,8 @@ def get_ds_class(type_name):
         return UCISEMG
     if type_name == 'uci_yeast':
         return UCIYeast
+    if type_name == 'driver':
+        return Driver
     return None
 
 def get_dataset(ds_config):
