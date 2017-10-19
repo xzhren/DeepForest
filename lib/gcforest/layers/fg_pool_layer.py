@@ -24,7 +24,7 @@ class FGPoolLayer(BaseLayer):
         super(FGPoolLayer, self).__init__(layer_config, data_cache)
         self.win_x = self.get_value("win_x", None, int, required=True)
         self.win_y = self.get_value("win_y", None, int, required=True)
-        self.pool_method = self.get_value("pool_method", "avg", basestring)
+        self.pool_method = self.get_value("pool_method", "avg", str)
 
     def fit_transform(self, train_config):
         LOGGER.info("[data][{}] bottoms={}, tops={}".format(self.name, self.bottom_names, self.top_names))

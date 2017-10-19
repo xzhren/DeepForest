@@ -80,7 +80,7 @@ class DataCache(object):
         data_name (str): name for tops/bottoms  
         ignore_no_exist (bool): if True, when no data found, return None, otherwise raise e
         """
-        assert isinstance(data_name, basestring), "data_name={}, type(data_name)={}".format(data_name, type(data_name))
+        assert isinstance(data_name, str), "data_name={}, type(data_name)={}".format(data_name, type(data_name))
         # return data if data in memory
         data_mem = self.datas[phase].get(data_name, None)
         if data_mem is not None:
