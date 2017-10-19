@@ -15,6 +15,7 @@
     "random_state": 0,
     "early_stopping_rounds": 5,
     "n_classes": 2,
+    "metrics": "nor_gini",
     "estimators": [
         {"n_folds":3,"type":"ExtraTreesClassifier","n_estimators":500,"max_depth":null,"n_jobs":-1,"oob_score":"True","bootstrap":"True","max_features":1},
         {"n_folds":3,"type":"ExtraTreesClassifier","n_estimators":500,"max_depth":null,"n_jobs":-1,"oob_score":"True","bootstrap":"True","max_features":1},

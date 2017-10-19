@@ -17,6 +17,8 @@ from ..estimators.est_utils import xgb_train
 from ..utils.config_utils import get_config_value
 from ..utils.log_utils import get_logger
 from ..utils.metrics import accuracy_pb
+from ..utils.metrics import gini_nor
+from ..utils.metrics import auc
 
 LOGGER = get_logger('gcforest.cascade.cascade_classifier')
 
@@ -30,11 +32,27 @@ def calc_accuracy(y_true, y_pred, name, prefix=""):
     LOGGER.info('{}Accuracy({})={:.2f}%'.format(prefix, name, acc))
     return acc
 
+def calc_gininor(y_true, y_pred, name, prefix=""):
+    gini = gini_nor(y_true, y_pred)
+    LOGGER.info('{}Accuracy({})={:.2f}%'.format(prefix, name, gini*100.0))
+    return gini
+
+def calc_auc(y_true, y_pred, name, prefix=""):
+    auc = auc(y_true, y_pred)
+    LOGGER.info('{}Accuracy({})={:.2f}%'.format(prefix, name, auc*100.0))
+    return auc
+
 def get_opt_layer_id(acc_list):
     """ Return layer id with max accuracy on training data """
     opt_layer_id = np.argsort(-np.asarray(acc_list), kind='mergesort')[0]
     return opt_layer_id
 
+def get_opt_layer_id_best(acc_list_train, acc_list_test):
+    """ Return layer id with max accuracy on training and testing data"""
+    opt_layer_id_train = np.argsort(-np.asarray(acc_list_train), kind='mergesort')[0]
+    opt_layer_id_test = np.argsort(-np.asarray(acc_list_test), kind='mergesort')[0]
+    opt_layer_id = opt_layer_id_train if opt_layer_id_train > opt_layer_id_test else opt_layer_id_test
+    return opt_layer_id
 
 class CascadeClassifier(object):
     def __init__(self, ca_config):
@@ -69,9 +87,17 @@ class CascadeClassifier(object):
         self.random_state = self.get_value("random_state", None, int)
         self.data_save_dir = self.get_value("data_save_dir", None, str)
         self.data_save_rounds = self.get_value("data_save_rounds", 0, int)
+        self.metrics = self.get_value("metrics", "predict", str)
         if self.data_save_rounds > 0:
             assert self.data_save_dir is not None, "data_save_dir should not be null when data_save_rounds>0"
-        self.eval_metrics = [("predict", accuracy_pb)]
+        if self.metrics == "predict":
+            self.eval_metrics = [("predict", accuracy_pb)]
+        elif self.metrics == "nor_gini":
+            self.eval_metrics = [("nor_gini", gini_nor)]
+        elif self.metrics == "gini":
+            self.eval_metrics = [("auc", auc)]
+        else:
+            self.eval_metrics = [("predict", accuracy_pb)]
         #LOGGER.info("\n" + json.dumps(ca_config, sort_keys=True, indent=4, separators=(',', ':')))
 
     @property
@@ -189,12 +215,19 @@ class CascadeClassifier(object):
                     y_test_proba_li += y_probas[1]
                 y_train_proba_li /= len(self.est_configs)
                 y_test_proba_li /= len(self.est_configs)
-                train_avg_acc = calc_accuracy(y_train, np.argmax(y_train_proba_li, axis=1), 'layer_{} - train.classifier_average'.format(layer_id))
-                test_avg_acc = calc_accuracy(y_test, np.argmax(y_test_proba_li, axis=1), 'layer_{} - test.classifier_average'.format(layer_id))
+                
+                if self.metrics == "nor_gini":
+                    train_avg_acc = calc_gininor(y_train, y_train_proba_li, 'layer_{} - train.nor_gini'.format(layer_id))
+                    test_avg_acc = calc_gininor(y_test, y_train_proba_li, 'layer_{} - test.nor_gini'.format(layer_id))
+                else:
+                    train_avg_acc = calc_accuracy(y_train, np.argmax(y_train_proba_li, axis=1), 'layer_{} - train.classifier_average'.format(layer_id))
+                    test_avg_acc = calc_accuracy(y_test, np.argmax(y_test_proba_li, axis=1), 'layer_{} - test.classifier_average'.format(layer_id))
+                
                 train_acc_list.append(train_avg_acc)
                 test_acc_list.append(test_avg_acc)
 
-                opt_layer_id = get_opt_layer_id(test_acc_list if stop_by_test else train_acc_list)
+                # opt_layer_id = get_opt_layer_id(test_acc_list if stop_by_test else train_acc_list)
+                opt_layer_id = get_opt_layer_id_best(train_acc_list, test_acc_list)
                 # set opt_datas
                 if opt_layer_id == layer_id:
                     opt_datas = [X_cur_train, y_train, X_cur_test, y_test]
