@@ -14,7 +14,11 @@ ToDo List For the Version 2
 ========
 - Train Driver DataSet：
   - python tools/train_cascade.py --model models/driver/gcforest/ca-tree500-n4x2-3folds.json --log_dir logs/gcforest/driver/ca-tree500-n4x2-3folds/
-- ​
+- ​1. Change Python 2.7 to Python 3.x
+  - basestring to str
+  - / to //
+- 2. Add metrics
+- 3. Add Best Layer ID Select
 
 Package Overview
 ========
