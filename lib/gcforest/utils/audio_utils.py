@@ -36,7 +36,7 @@ def get_feature_aqibsaeed_conv(X, sr, au_path=None):
         start = 0
         while start < len(data):
             yield start, start + window_size
-            start += (window_size / 2)
+            start += (window_size // 2)
     bands = 60
     frames = 41
     window_size = 512 * (frames - 1)

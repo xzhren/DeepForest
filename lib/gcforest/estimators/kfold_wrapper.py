@@ -86,7 +86,7 @@ class KFoldWrapper(object):
         # Fit
         y_probas = []
         n_dims = X.shape[-1]
-        n_datas = X.size / n_dims
+        n_datas = X.size // n_dims
         inverse = False
         for k in range(self.n_folds):
             est = self._init_estimator(k)

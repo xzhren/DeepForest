@@ -14,8 +14,8 @@ def get_windows_channel(X, X_win, des_id, nw, nh, win_x, win_y, stride_x, stride
     """
     #des_id = (k * win_y + di) * win_x + dj
     dj = des_id % win_x
-    di = des_id / win_x % win_y
-    k = des_id / win_x / win_y
+    di = des_id // win_x % win_y
+    k = des_id // win_x // win_y
     src = X[:, k, di:di+nh*stride_y:stride_y, dj:dj+nw*stride_x:stride_x].ravel()
     des = X_win[des_id, :]
     np.copyto(des, src)
