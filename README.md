@@ -19,8 +19,13 @@ ToDo List For the Version 2
   - basestring to str
   - / to //
 - 2. Add metrics (FINISH)
+  - auc
+  - nor-gini
 - 3. Add Best Layer ID Select (FINISH)
-- 4. Add XGBoost (ING)
+  - train dataset and test dataset best result layer id
+- 4. Add GDBT (FINISH)
+  - {"n_folds":3,"type":"GradientBoostingClassifier","n_estimators":50,"max_depth":10,"loss":"exponential","learning_rate":0.01,"warm_start":"True"}
+- 5. Add XGBoost (ING)
 
 Package Overview
 ========

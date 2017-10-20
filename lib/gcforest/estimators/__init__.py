@@ -7,8 +7,10 @@ ATTN: This package is free for academic usage. You can run it at your own risk. 
 ATTN2: This package was developed by Mr.Ji Feng(fengj@lamda.nju.edu.cn). The readme file and demo roughly explains how to use the codes. For any problem concerning the codes, please feel free to contact Mr.Feng. 
 """
 from .base_estimator import BaseClassifierWrapper
-from .sklearn_estimators import GCExtraTreesClassifier, GCRandomForestClassifier
-#from .xgb_estimator import GCXGBClassifier
+from .sklearn_estimators import GCExtraTreesClassifier
+from .sklearn_estimators import GCRandomForestClassifier
+from .sklearn_estimators import GCGradientBoostingClassifier
+# from .sklearn_estimators import GCXGBClassifier
 from .kfold_wrapper import KFoldWrapper
 
 def get_estimator_class(est_type):
@@ -16,7 +18,9 @@ def get_estimator_class(est_type):
         return GCExtraTreesClassifier
     if est_type == "RandomForestClassifier":
         return GCRandomForestClassifier
-    #if est_type == "XGBClassifier":
+    if est_type == "GradientBoostingClassifier":
+        return GCGradientBoostingClassifier
+    # if est_type == "XGBClassifier":
     #    return GCXGBClassifier
     raise ValueError('Unkown Estimator Type, est_type={}'.format(est_type))
 

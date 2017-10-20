@@ -50,3 +50,11 @@ class GCRandomForestClassifier(SKlearnBaseClassifier):
     
     def _default_predict_batch_size(self, clf, X):
         return forest_predict_batch_size(clf, X)
+
+class GCGradientBoostingClassifier(SKlearnBaseClassifier):
+    def __init__(self, name, kwargs):
+        from sklearn.ensemble import GradientBoostingClassifier
+        super(GCGradientBoostingClassifier, self).__init__(name, GradientBoostingClassifier, kwargs)
+    
+    def _default_predict_batch_size(self, clf, X):
+        return forest_predict_batch_size(clf, X)
