@@ -14,11 +14,13 @@ ToDo List For the Version 2
 ========
 - Train Driver DataSet：
   - python tools/train_cascade.py --model models/driver/gcforest/ca-tree500-n4x2-3folds.json --log_dir logs/gcforest/driver/ca-tree500-n4x2-3folds/
-- ​1. Change Python 2.7 to Python 3.x
+  - python tools/train_cascade.py --model .\models\driver\gcforest\ca-tree50-deep10-n1x2-3folds.json --log_dir logs/gcforest/driver/ca-tree50-n1x2-3folds/
+- ​1. Change Python 2.7 to Python 3.x (FINISH)
   - basestring to str
   - / to //
-- 2. Add metrics
-- 3. Add Best Layer ID Select
+- 2. Add metrics (FINISH)
+- 3. Add Best Layer ID Select (FINISH)
+- 4. Add XGBoost (ING)
 
 Package Overview
 ========

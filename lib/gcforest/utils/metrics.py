@@ -47,6 +47,7 @@ def gini(y, pred):
 
 def gini_nor(y_true, y_proba):
     y_proba = [item[1] for item in y_proba]
+    y_proba = np.array(y_proba)
     return gini(y_true, y_proba) / gini(y_true, y_true)
 
 def auc(y_true, y_proba):

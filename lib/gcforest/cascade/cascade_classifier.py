@@ -218,7 +218,7 @@ class CascadeClassifier(object):
                 
                 if self.metrics == "nor_gini":
                     train_avg_acc = calc_gininor(y_train, y_train_proba_li, 'layer_{} - train.nor_gini'.format(layer_id))
-                    test_avg_acc = calc_gininor(y_test, y_train_proba_li, 'layer_{} - test.nor_gini'.format(layer_id))
+                    test_avg_acc = calc_gininor(y_test, y_test_proba_li, 'layer_{} - test.nor_gini'.format(layer_id))
                 else:
                     train_avg_acc = calc_accuracy(y_train, np.argmax(y_train_proba_li, axis=1), 'layer_{} - train.classifier_average'.format(layer_id))
                     test_avg_acc = calc_accuracy(y_test, np.argmax(y_test_proba_li, axis=1), 'layer_{} - test.classifier_average'.format(layer_id))
