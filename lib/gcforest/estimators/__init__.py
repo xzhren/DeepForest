@@ -10,7 +10,7 @@ from .base_estimator import BaseClassifierWrapper
 from .sklearn_estimators import GCExtraTreesClassifier
 from .sklearn_estimators import GCRandomForestClassifier
 from .sklearn_estimators import GCGradientBoostingClassifier
-# from .sklearn_estimators import GCXGBClassifier
+from .xgb_estimator import GCXGBClassifier
 from .kfold_wrapper import KFoldWrapper
 
 def get_estimator_class(est_type):
@@ -20,8 +20,6 @@ def get_estimator_class(est_type):
         return GCRandomForestClassifier
     if est_type == "GradientBoostingClassifier":
         return GCGradientBoostingClassifier
-    # if est_type == "XGBClassifier":
-    #    return GCXGBClassifier
     raise ValueError('Unkown Estimator Type, est_type={}'.format(est_type))
 
 def get_estimator(name, est_type, est_args):
@@ -29,5 +27,7 @@ def get_estimator(name, est_type, est_args):
     return est_class(name, est_args)
 
 def get_estimator_kfold(name, n_splits, est_type, est_args, random_state=None):
+    if est_type == "XGBClassifier":
+        return GCXGBClassifier(name, n_splits, est_args, random_state=random_state)
     est_class = get_estimator_class(est_type)
     return KFoldWrapper(name, n_splits, est_class, est_args, random_state=random_state)
