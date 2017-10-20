@@ -116,10 +116,12 @@ class GCXGBClassifier(object):
             xg_test = xgb.DMatrix(X[val_idx].reshape((-1, n_dims)), label=y[val_idx].reshape(-1))
             watchlist = [(xg_train, 'train'), (xg_test, 'test')]
 
-            LOGGER.info("X_train.shape={}, y_train.shape={}".format(X.shape, y.shape))
-            num_round = 100
-            est = xgb.train(self.est_args, dtrain=xg_train, num_boost_round=num_round, 
-                evals=watchlist, verbose_eval=5)
+            LOGGER.debug("X_train.shape={}, y_train.shape={}".format(X.shape, y.shape))
+            num_round = 1600
+            stop_roud = 70
+            verbose_roud = 100
+            est = xgb.train(self.est_args, dtrain=xg_train, num_boost_round=num_round, early_stopping_rounds=stop_roud,
+                evals=watchlist, verbose_eval=10)
             y_pred = est.predict(xg_test)
             y_proba = []
             for item in y_pred:
@@ -128,7 +130,7 @@ class GCXGBClassifier(object):
                 tmp.append(item)
                 y_proba.append(tmp)
             y_proba = np.array(y_proba)
-            LOGGER.info("y_proba.shape={}".format(y_proba.shape))
+            LOGGER.debug("y_proba.shape={}".format(y_proba.shape))
             # est.fit(X[train_idx].reshape((-1, n_dims)), y[train_idx].reshape(-1), cache_dir=cache_dir)
 
             # predict on k-fold validation
@@ -160,7 +162,7 @@ class GCXGBClassifier(object):
                     tmp.append(item)
                     y_proba.append(tmp)
                 y_proba = np.array(y_proba)
-                LOGGER.info("y_proba.shape={}".format(y_proba.shape))
+                LOGGER.debug("y_proba.shape={}".format(y_proba.shape))
 
                 if len(X.shape) == 3:
                     y_proba = y_proba.reshape((X_test.shape[0], X_test.shape[1], y_proba.shape[-1]))

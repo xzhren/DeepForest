@@ -188,9 +188,16 @@ class CascadeClassifier(object):
                     # first layer not have probability distribution
                     X_cur_train = np.zeros((n_trains, 0), dtype=np.float32)
                     X_cur_test = np.zeros((n_tests, 0), dtype=np.float32)
-                else:
+                elif layer_id == 1:
                     X_cur_train = X_proba_train.copy()
                     X_cur_test = X_proba_test.copy()
+                    last_proba_train = X_cur_train.copy()
+                    last_proba_test = X_cur_test.copy()
+                else:
+                    X_cur_train = np.concatenate((X_proba_train.copy(), last_proba_train), axis=1)
+                    X_cur_test = np.concatenate((X_proba_test.copy(), last_proba_test), axis=1)
+                    last_proba_train = X_cur_train.copy()
+                    last_proba_test = X_cur_test.copy()
                 # Stack data that current layer needs in to X_cur
                 look_indexs = look_indexs_cycle[layer_id % len(look_indexs_cycle)]
                 for _i, i in enumerate(look_indexs):

@@ -25,8 +25,10 @@ ToDo List For the Version 2
   - train dataset and test dataset best result layer id
 - 4. Add GDBT (FINISH)
   - {"n_folds":3,"type":"GradientBoostingClassifier","n_estimators":50,"max_depth":10,"loss":"exponential","learning_rate":0.01,"warm_start":"True"}
-- 5. Add XGBoost (ING)
+- 5. Add XGBoost (FINISH)
   - python tools/train_cascade.py --model .\models\driver\gcforest\ca-tree50-deep10-n1x1-3folds.json --log_dir logs/gcforest/driver/ca-tree50-n1x1-3folds/
+- 6. Add Feature Not Reduce (FINISH)
+
 
 Package Overview
 ========
