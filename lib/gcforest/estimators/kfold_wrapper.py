@@ -173,3 +173,7 @@ class KFoldWrapper(object):
         #y_proba_cv = y_proba_cv.reshape((n, nh, nw, self.n_classes)).transpose((0, 3, 1, 2))
         #return y_proba_cv
         pass
+
+    
+    def _predict_proba(self, est, X):
+        return est.predict_proba(X)

@@ -124,7 +124,7 @@ class GCXGBClassifier(object):
             est = xgb.train(self.est_args, dtrain=xg_train, num_boost_round=num_round, early_stopping_rounds=stop_roud,
                 evals=watchlist, verbose_eval=10)
             # self.est = est
-            y_proba = self.predict_proba(xg_test)
+            y_proba = self._predict_proba(est, xg_test)
             LOGGER.debug("y_proba.shape={}".format(y_proba.shape))
             # est.fit(X[train_idx].reshape((-1, n_dims)), y[train_idx].reshape(-1), cache_dir=cache_dir)
 

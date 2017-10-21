@@ -301,7 +301,7 @@ class CascadeClassifier(object):
         ## BUG
         res_df = pd.DataFrame()
         res_df['id'] = test_id
-        res_df['target'] = res_layer[:, 1::2].sum(axis=1) / res_layer.shape(1) * 2.0
+        res_df['target'] = res_layer[:, 1::2].sum(axis=1) / res_layer.shape[1] * 2.0
 
         file_pre = datetime.datetime.now().strftime('%m_%d_%H_%M')
         LOGGER.info("[Result][Test OutPut] res_df.shape={}".format(res_df.shape))
