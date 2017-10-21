@@ -214,7 +214,7 @@ class CascadeClassifier(object):
                     # fit_trainsform
                     y_probas = est.fit_transform(X_cur_train, y_train, y_train,
                             test_sets=[("test", X_cur_test, y_test)], eval_metrics=self.eval_metrics, 
-                            keep_model_in_mem=False)
+                            keep_model_in_mem=True)
                     self.estlist.append(est)
                     # train
                     X_proba_train[:,ei*n_classes:ei*n_classes+n_classes] = y_probas[0]
