@@ -98,6 +98,7 @@ class CascadeClassifier(object):
             self.eval_metrics = [("auc", auc)]
         else:
             self.eval_metrics = [("predict", accuracy_pb)]
+        self.estlist = []
         #LOGGER.info("\n" + json.dumps(ca_config, sort_keys=True, indent=4, separators=(',', ':')))
 
     @property
@@ -214,6 +215,7 @@ class CascadeClassifier(object):
                     y_probas = est.fit_transform(X_cur_train, y_train, y_train,
                             test_sets=[("test", X_cur_test, y_test)], eval_metrics=self.eval_metrics, 
                             keep_model_in_mem=False)
+                    self.estlist.append(est)
                     # train
                     X_proba_train[:,ei*n_classes:ei*n_classes+n_classes] = y_probas[0]
                     y_train_proba_li += y_probas[0]

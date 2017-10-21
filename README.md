@@ -28,6 +28,7 @@ ToDo List For the Version 2
 - 5. Add XGBoost (FINISH)
   - python tools/train_cascade.py --model .\models\driver\gcforest\ca-tree50-deep10-n1x1-3folds.json --log_dir logs/gcforest/driver/ca-tree50-n1x1-3folds/
 - 6. Add Feature Not Reduce (FINISH)
+- 7. Add Output Test Data
 
 
 Package Overview

@@ -40,5 +40,6 @@ if __name__ == '__main__':
 
     cascade = CascadeClassifier(config["cascade"])
     opt_layer_id, X_train, y_train, X_test, y_test = cascade.fit_transform(data_train.X, data_train.y, data_test.X, data_test.y)
+    # y_proba_cv = cascade.predict_test(data_train.test)
 
     import IPython; IPython.embed()

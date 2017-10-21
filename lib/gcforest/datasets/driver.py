@@ -29,33 +29,37 @@ def load_data():
     # X_test, y_test = X[16000:], y[16000:]
 
     df_train = pd.read_csv(osp.join(get_dataset_base(), "driver", 'train.csv'))
-    # df_test = pd.read_csv(osp.join(get_dataset_base(), "driver", 'test_cat.csv'))
+    df_test = pd.read_csv(osp.join(get_dataset_base(), "driver", 'test.csv'))
     target_train = df_train['target'].values
     # id_test = df_test['id'].values
     # id_train = df_train['id'].values
     df_train=df_train.drop(['target','id'],axis=1)
-    # df_test=df_test.drop(['id'], axis = 1)
+    df_test=df_test.drop(['id'], axis = 1)
     print ("The train shape is:",df_train.shape)
-    # print ('The test shape is:',df_test.shape)
+    print ('The test shape is:',df_test.shape)
     X = df_train.values
     y = target_train
-    # X_test = df_test.values
+    X_result = df_test.values
     sss = StratifiedShuffleSplit(n_splits=1, test_size=0.15, random_state=9487)
     train_index, test_index = list(sss.split(X, y))[0]
     X_train, X_test = X[train_index], X[test_index]
     y_train, y_test = y[train_index], y[test_index]
     print ("The train shape is:",X_train.shape, y_train.shape)
     print ("The test shape is:",X_test.shape, y_test.shape)
-    return X_train, y_train, X_test, y_test
+    return X_train, y_train, X_test, y_test, X_result
 
 class Driver(ds_base):
     def __init__(self, **kwargs):
         super(Driver, self).__init__(**kwargs)
-        X_train, y_train, X_test, y_test = load_data()
+        X_train, y_train, X_test, y_test, X_result = load_data()
         X, y = self.get_data_by_imageset(X_train, y_train, X_test, y_test)
 
         X = X[:,np.newaxis,:,np.newaxis]
         X = self.init_layout_X(X)
         y = self.init_layout_y(y)
+        print ("The X shape is:",X.shape)
+        print ('The y shape is:',y.shape)
         self.X = X
         self.y = y
+        self.test = X_result
+        print ('The test shape is:',self.test.shape)
