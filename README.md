@@ -28,26 +28,10 @@ ToDo List For the Version 2
 - 5. Add XGBoost (FINISH)
   - python tools/train_cascade.py --model .\models\driver\gcforest\ca-tree50-deep10-n1x1-3folds.json --log_dir logs/gcforest/driver/ca-tree50-n1x1-3folds/
 - 6. Add Feature Not Reduce (FINISH)
-- 7. Add Output Test Data (ING)
-  - Stage-1: IPython: 
-X_test = data_train.test
-print ('The test shape is:', X_test.shape)
-
-reslist = []
-len1 = len(cascade.estlist)
-for est in cascade.estlist[:2]:
-  print(est, len1)
-  len2 = len(est.estimator1d)
-  for tree in est.estimator1d:
-    print(tree, len2)
-    res = tree.predict_proba(X_test)
-    res = [item[1] for item in res]
-    print(res[:10])
-    reslist.append(res)
-print(len(reslist))
-
-res_df = pd.DataFrame(reslist)
-res_df.T.to_csv("test.csv")
+- 7. Add Output Test Data (FINISH)
+  - Stage-1: IPython
+  - Stage-2: predict_test in train_cascade
+- 8. Add Output the Class Vector
 
 Package Overview
 ========

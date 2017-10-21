@@ -9,8 +9,10 @@ ATTN2: This package was developed by Mr.Ji Feng(fengj@lamda.nju.edu.cn). The rea
 """
 import sys, os, os.path as osp
 import numpy as np
+import pandas as pd
 import json
 import pickle
+import datetime
 
 from ..estimators import get_estimator_kfold
 from ..estimators.est_utils import xgb_train
@@ -195,8 +197,10 @@ class CascadeClassifier(object):
                     last_proba_train = X_cur_train.copy()
                     last_proba_test = X_cur_test.copy()
                 else:
-                    X_cur_train = np.concatenate((X_proba_train.copy(), last_proba_train), axis=1)
-                    X_cur_test = np.concatenate((X_proba_test.copy(), last_proba_test), axis=1)
+                    # X_cur_train = np.concatenate((X_proba_train.copy(), last_proba_train), axis=1)
+                    # X_cur_test = np.concatenate((X_proba_test.copy(), last_proba_test), axis=1)
+                    X_cur_train = np.hstack((X_proba_train.copy(), last_proba_train))
+                    X_cur_test = np.hstack((X_proba_test.copy(), last_proba_test))
                     last_proba_train = X_cur_train.copy()
                     last_proba_test = X_cur_test.copy()
                 # Stack data that current layer needs in to X_cur
@@ -209,19 +213,22 @@ class CascadeClassifier(object):
                 # Fit on X_cur, predict to update X_proba
                 y_train_proba_li = np.zeros((y_train.shape[0], n_classes))
                 y_test_proba_li = np.zeros((y_test.shape[0], n_classes))
+                tmp_est_list = []
                 for ei, est_config in enumerate(self.est_configs):
                     est = self._init_estimators(layer_id, ei)
                     # fit_trainsform
                     y_probas = est.fit_transform(X_cur_train, y_train, y_train,
                             test_sets=[("test", X_cur_test, y_test)], eval_metrics=self.eval_metrics, 
                             keep_model_in_mem=True)
-                    self.estlist.append(est)
+                    tmp_est_list.append(est)
                     # train
                     X_proba_train[:,ei*n_classes:ei*n_classes+n_classes] = y_probas[0]
                     y_train_proba_li += y_probas[0]
                     # test
                     X_proba_test[:,ei*n_classes:ei*n_classes+n_classes] = y_probas[1]
                     y_test_proba_li += y_probas[1]
+
+                self.estlist.append(tmp_est_list)
                 y_train_proba_li /= len(self.est_configs)
                 y_test_proba_li /= len(self.est_configs)
                 
@@ -262,6 +269,46 @@ class CascadeClassifier(object):
             return self.max_layers, opt_datas[0], opt_datas[1], opt_datas[2], opt_datas[3]
         except KeyboardInterrupt:
             pass
+
+    def predict_test(self, test, test_id, opt_layer_id):
+        LOGGER.info("[Result][Test OutPut] test.shape={}, best layer id={}".format(test.shape, opt_layer_id))
+        
+        res_df = pd.DataFrame()
+        res_df['id'] = test_id
+        for est_layer in self.estlist[:opt_layer_id+1]:
+            # print(est_layer, len(self.estlist))
+            res_layer = np.array([])
+            ## BUG
+            res_df['target'] = [0] * len(test)
+            for est in est_layer:
+                # print(est, len(est_layer))
+                res_est = np.array([0.0] * 2 * len(test)).reshape(-1, 2)
+                for tree in est.estimator1d:
+                    # print(tree, len(est.estimator1d))
+                    # print(test.shape)
+                    res = tree.predict_proba(test)
+                    res_est += res.copy() / len(est.estimator1d)
+                    ## BUG
+                    res = [item[1] for item in res]
+                    res = np.array(res)
+                    res_df['target'] += res / len(est.estimator1d) / len(est_layer) / len(self.estlist)
+
+                if res_layer.size == 0:
+                    res_layer = res_est
+                else:
+                    # res_layer = np.concatenate((res_layer, res_est), axis=1)
+                    res_layer = np.hstack((res_layer, res_est))
+                # print(res_layer.shape)
+                # print(res_layer[:10])
+            # test = np.concatenate((test, res_layer), axis=1)  
+            test = np.hstack((test, res_layer))  
+            LOGGER.info("[Result][Test OutPut] test.shape={}".format(test.shape))
+
+        file_pre = datetime.datetime.now().strftime('%m_%d_%H_%M')
+        LOGGER.info("[Result][Test OutPut] res_df.shape={}".format(res_df.shape))
+        res_df.to_csv("./submission/"+file_pre+".csv", index=False)
+        return res_df
+
 
     def save_data(self, layer_id, X_train, y_train, X_test, y_test):
         for pi, phase in enumerate(["train", "test"]):

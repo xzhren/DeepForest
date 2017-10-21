@@ -31,7 +31,7 @@ def load_data():
     df_train = pd.read_csv(osp.join(get_dataset_base(), "driver", 'train.csv'))
     df_test = pd.read_csv(osp.join(get_dataset_base(), "driver", 'test.csv'))
     target_train = df_train['target'].values
-    # id_test = df_test['id'].values
+    id_test = df_test['id'].values
     # id_train = df_train['id'].values
     df_train=df_train.drop(['target','id'],axis=1)
     df_test=df_test.drop(['id'], axis = 1)
@@ -46,12 +46,12 @@ def load_data():
     y_train, y_test = y[train_index], y[test_index]
     print ("The train shape is:",X_train.shape, y_train.shape)
     print ("The test shape is:",X_test.shape, y_test.shape)
-    return X_train, y_train, X_test, y_test, X_result
+    return X_train, y_train, X_test, y_test, X_result, id_test
 
 class Driver(ds_base):
     def __init__(self, **kwargs):
         super(Driver, self).__init__(**kwargs)
-        X_train, y_train, X_test, y_test, X_result = load_data()
+        X_train, y_train, X_test, y_test, X_result, id_test = load_data()
         X, y = self.get_data_by_imageset(X_train, y_train, X_test, y_test)
 
         X = X[:,np.newaxis,:,np.newaxis]
@@ -62,4 +62,5 @@ class Driver(ds_base):
         self.X = X
         self.y = y
         self.test = X_result
+        self.test_id = id_test
         print ('The test shape is:',self.test.shape)
