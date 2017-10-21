@@ -31,7 +31,7 @@ ToDo List For the Version 2
 - 7. Add Output Test Data (FINISH)
   - Stage-1: IPython
   - Stage-2: predict_test in train_cascade
-- 8. Add Output the Class Vector
+- 8. Add Output the Class Vector & Tree Paths
 
 Package Overview
 ========

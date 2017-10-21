@@ -273,36 +273,35 @@ class CascadeClassifier(object):
     def predict_test(self, test, test_id, opt_layer_id):
         LOGGER.info("[Result][Test OutPut] test.shape={}, best layer id={}".format(test.shape, opt_layer_id))
         
-        res_df = pd.DataFrame()
-        res_df['id'] = test_id
         for est_layer in self.estlist[:opt_layer_id+1]:
-            # print(est_layer, len(self.estlist))
+            print(est_layer, len(self.estlist))
             res_layer = np.array([])
-            ## BUG
-            res_df['target'] = [0] * len(test)
             for est in est_layer:
-                # print(est, len(est_layer))
+                print(est, len(est_layer))
                 res_est = np.array([0.0] * 2 * len(test)).reshape(-1, 2)
                 for tree in est.estimator1d:
-                    # print(tree, len(est.estimator1d))
-                    # print(test.shape)
-                    res = tree.predict_proba(test)
-                    res_est += res.copy() / len(est.estimator1d)
-                    ## BUG
-                    res = [item[1] for item in res]
-                    res = np.array(res)
-                    res_df['target'] += res / len(est.estimator1d) / len(est_layer) / len(self.estlist)
-
+                    print(tree, len(est.estimator1d))
+                    print(test.shape)
+                    res = est._predict_proba(tree, test)
+                    # res = tree.predict_proba(test)
+                    res_est += res / len(est.estimator1d)
+                    # res_est += res.copy() / len(est.estimator1d)
+                    
                 if res_layer.size == 0:
                     res_layer = res_est
                 else:
                     # res_layer = np.concatenate((res_layer, res_est), axis=1)
                     res_layer = np.hstack((res_layer, res_est))
-                # print(res_layer.shape)
-                # print(res_layer[:10])
+                print(res_layer.shape)
+                print(res_layer[:10])
             # test = np.concatenate((test, res_layer), axis=1)  
             test = np.hstack((test, res_layer))  
             LOGGER.info("[Result][Test OutPut] test.shape={}".format(test.shape))
+
+        ## BUG
+        res_df = pd.DataFrame()
+        res_df['id'] = test_id
+        res_df['target'] = res_layer[:, 1::2].sum(axis=1) / res_layer.shape(1) * 2.0
 
         file_pre = datetime.datetime.now().strftime('%m_%d_%H_%M')
         LOGGER.info("[Result][Test OutPut] res_df.shape={}".format(res_df.shape))

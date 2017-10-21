@@ -13,7 +13,7 @@
 "cascade": {
     "data_save_dir": "/mnt/raid/fengji/gcforest/driver/ca-tree50-deep10-n1x2-3folds/",
     "random_state": 0,
-    "early_stopping_rounds": 2,
+    "early_stopping_rounds": 7,
     "n_classes": 2,
     "metrics": "nor_gini",
     "estimators": [

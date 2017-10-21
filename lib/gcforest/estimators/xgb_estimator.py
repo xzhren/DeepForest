@@ -43,6 +43,7 @@ class GCXGBClassifier(object):
         self.est_args = est_args
         self.random_state = random_state
         self.estimator1d = [None for k in range(self.n_folds)]
+        # self.est = None
         # self.cache_suffix = ".pkl"
 
     # def __init__(self, name, est_class, est_args):
@@ -122,14 +123,8 @@ class GCXGBClassifier(object):
             verbose_roud = 100
             est = xgb.train(self.est_args, dtrain=xg_train, num_boost_round=num_round, early_stopping_rounds=stop_roud,
                 evals=watchlist, verbose_eval=10)
-            y_pred = est.predict(xg_test)
-            y_proba = []
-            for item in y_pred:
-                tmp = []
-                tmp.append(1-item)
-                tmp.append(item)
-                y_proba.append(tmp)
-            y_proba = np.array(y_proba)
+            # self.est = est
+            y_proba = self.predict_proba(xg_test)
             LOGGER.debug("y_proba.shape={}".format(y_proba.shape))
             # est.fit(X[train_idx].reshape((-1, n_dims)), y[train_idx].reshape(-1), cache_dir=cache_dir)
 
@@ -180,6 +175,17 @@ class GCXGBClassifier(object):
             if y_test is not None:
                 self.log_eval_metrics(self.name, y_test, y_probas[vi + 1], eval_metrics, test_name)
         return y_probas
+
+    def _predict_proba(self, est, X):
+        y_pred = est.predict(X)
+        y_proba = []
+        for item in y_pred:
+            tmp = []
+            tmp.append(1-item)
+            tmp.append(item)
+            y_proba.append(tmp)
+        y_proba = np.array(y_proba)
+        return y_proba
 
     def log_eval_metrics(self, est_name, y_true, y_proba, eval_metrics, y_name):
         """
