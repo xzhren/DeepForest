@@ -148,7 +148,10 @@ class GCXGBClassifier(object):
             # test
             for vi, (prefix, X_test, y_test) in enumerate(test_sets):
                 # y_pred = est.predict(X_test.reshape((-1, n_dims)), cache_dir=cache_dir)
-                xg_test = xgb.DMatrix(X_test.reshape((-1, n_dims)), label=y_test.reshape(-1))
+                if type(y_test) == type(None):
+                    xg_test = xgb.DMatrix(X_test.reshape((-1, n_dims)))
+                else:
+                    xg_test = xgb.DMatrix(X_test.reshape((-1, n_dims)), label=y_test.reshape(-1))
                 y_pred = est.predict(xg_test)
                 y_proba = []
                 for item in y_pred:
@@ -177,7 +180,11 @@ class GCXGBClassifier(object):
         return y_probas
 
     def _predict_proba(self, est, X):
-        y_pred = est.predict(X)
+        if type(X) == list:
+            xg_test = xgb.DMatrix(X)
+        else:
+            xg_test = X
+        y_pred = est.predict(xg_test)
         y_proba = []
         for item in y_pred:
             tmp = []
